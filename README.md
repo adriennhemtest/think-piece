@@ -1,4 +1,4 @@
-# Firebase && React
+# Firebase && React update
 
 ## Initial Set Up
 
