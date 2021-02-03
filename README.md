@@ -1,18 +1,19 @@
-# Firebase && React update
+# Firebase && React
 
-## Initial Set Up
+## Update content
 
-- Take a tour of the application.
-- Set up a new project in the Firebase console.
-- Take a tour of the Firebase console.
-- Go to the Database section and create a new Cloud Firestore.
-  - Put it into test mode.
+Take a tour of the application.
+
+* Set up a new project in the Firebase console.
+* Take a tour of the Firebase console.
+* Go to the Database section and create a new Cloud Firestore.
+  * Put it into test mode.
 
 ## Installing Firebase in Your React Application
 
 Let's make a new file called `firebase.js`.
 
-```js
+```javascript
 import firebase from 'firebase/app';
 
 const config = {
@@ -31,17 +32,17 @@ export default firebase;
 
 Explain the following:
 
-- The apiKey just associates you with a Firebase project. We don't need to hide it.
-  - Your project will be protected by security rules later.
-  - There is a second, more important key that we'll use later that *should* be hidden.
-- We're just pulling in `firebase/app` so that we don't end up pulling in more than we need in our client-side application.
-- We configure Firebase and then we'll export it for use in other places in our application.
+* The apiKey just associates you with a Firebase project. We don't need to hide it.
+  * Your project will be protected by security rules later.
+  * There is a second, more important key that we'll use later that _should_ be hidden.
+* We're just pulling in `firebase/app` so that we don't end up pulling in more than we need in our client-side application.
+* We configure Firebase and then we'll export it for use in other places in our application.
 
 ### Setting Up Cloud Firestore
 
-This basic installation of firebase does *not* include Cloud Firestore. So, let's get that in place as well.
+This basic installation of firebase does _not_ include Cloud Firestore. So, let's get that in place as well.
 
-```js
+```javascript
 import firebase from 'firebase/app';
 import 'firebase/firestore'; // NEW
 
@@ -69,13 +70,13 @@ Let's start by fetching posts whenenver the `Application` component mounts.
 
 First, let's pull in Cloud Firestore from our new `firebase.js` file.
 
-```js
+```javascript
 import { firestore } from '../firebase';
 ```
 
-Now, we'll get all of  the posts from Cloud Firestore whenenver the `Application` component mounts.
+Now, we'll get all of the posts from Cloud Firestore whenenver the `Application` component mounts.
 
-```js
+```javascript
 componentDidMount = async () => {
   const posts = await firestore.collection('posts').get();
 
@@ -87,35 +88,33 @@ Hmm… that looks like a `QuerySnapshot` not our posts. What is that?
 
 ### QuerySnapshots
 
-<!-- SLIDES -->
-
 A `QuerySnapshot` has the following properties:
 
-- `docs`: All of the documents in the snapshot.
-- `empty`: This is a boolean that lets us know if the snapshot was empty.
-- `metadata`:  Metadata about this snapshot, concerning its source and if it has local modifications.
-  - Example: `SnapshotMetadata {hasPendingWrites: false, fromCache: false}`
-- `query`: A reference to the query that you fired.
-- `size`: The number of documents in the `QuerySnapshot`.
+* `docs`: All of the documents in the snapshot.
+* `empty`: This is a boolean that lets us know if the snapshot was empty.
+* `metadata`:  Metadata about this snapshot, concerning its source and if it has local modifications.
+  * Example: `SnapshotMetadata {hasPendingWrites: false, fromCache: false}`
+* `query`: A reference to the query that you fired.
+* `size`: The number of documents in the `QuerySnapshot`.
 
 …and the following methods:
 
-- `docChanges()`: An array of the changes since the last snapshot.
-- `forEach()`: Iterates over the entire array of snapshots.
-- `isEqual()`: Let's you know if it matches another snapshot.
+* `docChanges()`: An array of the changes since the last snapshot.
+* `forEach()`: Iterates over the entire array of snapshots.
+* `isEqual()`: Let's you know if it matches another snapshot.
 
 `QuerySnapshots` typically hold onto a number `QueryDocumentSnapshot`s, which inherit from `DocumentSnapshot` and have the following properties:
 
-- `id`: The `id` of the given document.
-- `exists`: Is this even a thing in the database?
-- `metadata`: Pretty much the same as `QuerySnapshot` above.
-- `ref`: A reference to the the documents location in the database.
+* `id`: The `id` of the given document.
+* `exists`: Is this even a thing in the database?
+* `metadata`: Pretty much the same as `QuerySnapshot` above.
+* `ref`: A reference to the the documents location in the database.
 
 …and the following methods:
 
-- `data()`: Gets all of the fields of the object.
-- `get()`: Allows you to access a particular property on the object.
-- `isEqual()`: Useful for comparisons.
+* `data()`: Gets all of the fields of the object.
+* `get()`: Allows you to access a particular property on the object.
+* `isEqual()`: Useful for comparisons.
 
 References allow you to access the database itself. This is useful for getting the collection that document is from, deleting the document, listening for changes, setting and updating properties.
 
@@ -123,7 +122,7 @@ References allow you to access the database itself. This is useful for getting t
 
 You'll notice that we have a very mean error message at the top of our console. Cloud Firestore made an API change that we need to opt into. This is a new application, so that seems fine.
 
-```js
+```javascript
 firestore.settings({ timestampsInSnapshots: true });
 ```
 
@@ -133,7 +132,7 @@ Now the error should be gone.
 
 So, now let's iterate through all zero of our documents.
 
-```js
+```javascript
 componentDidMount = async () => {
   const snapshot = await firestore.collection('posts').get();
 
@@ -150,7 +149,7 @@ There won't be a lot to see here. Let's go into the Cloud Firestore console and 
 
 Now, we should see it in the console.
 
-```js
+```javascript
 componentDidMount = async () => {
   const snapshot = await firestore.collection('posts').get();
 
@@ -162,13 +161,13 @@ componentDidMount = async () => {
 
 An aside, combining the document IDs with the data is something we're going to be doing a lot. Let's make a utility method in `utilities.js`:
 
-```js
+```javascript
 export const collectIdsAndData = doc => ({ id: doc.id, ...doc.data() })
 ```
 
 Now, we'll refactor that code as follows in `Application.js`:
 
-```js
+```javascript
 componentDidMount = async () => {
     const snapshot = await firestore.collection('posts').get();
 
@@ -180,7 +179,7 @@ componentDidMount = async () => {
 
 Now, we can rid of the those posts in state.
 
-```js
+```javascript
 state = {
   posts: [],
 };
@@ -190,7 +189,7 @@ state = {
 
 First of all, we need to get rid of that `Date.now()` based `id` in `AddPost`. It was useful for us for a second or two there, but now have Firebase generating for us on our behalf.
 
-```js
+```javascript
 handleCreate = async post => {
   const docRef = await firestore.collection('posts').add(post);
   const doc = await docRef.get();
@@ -211,7 +210,7 @@ handleCreate = async post => {
 
 In `Application.js`:
 
-```js
+```javascript
 import React, { Component } from 'react';
 
 import Posts from './Posts';
@@ -249,7 +248,7 @@ export default Application;
 
 In `Posts.js`:
 
-```js
+```javascript
 const Posts = ({ posts, onCreate, onRemove /* NEW */ }) => {
   return (
     <section className="Posts">
@@ -264,13 +263,13 @@ const Posts = ({ posts, onCreate, onRemove /* NEW */ }) => {
 
 In `Post.js`:
 
-```js
+```javascript
 <button className="delete" onClick={() => onRemove(id)}>Delete</button>
 ```
 
 Now, we need to actually remove it from the Firestore.
 
-```js
+```javascript
 handleRemove = async (id) => { // NEW
   const allPosts = this.state.posts;
 
@@ -286,7 +285,7 @@ handleRemove = async (id) => { // NEW
 
 Instead of managing data manually, you can also subscribe to changes in the database. Instead of a `.get()` on the collection. You'd go with `.onSnapshot()`.
 
-```js
+```javascript
 import React, { Component } from 'react';
 
 import Posts from './Posts';
@@ -347,7 +346,7 @@ export default Application;
 
 In `Post.jsx`:
 
-```js
+```javascript
 <button className="delete" onClick={() => firestore.collection('posts').doc(id).delete()}>
   Delete
 </button>
@@ -355,7 +354,7 @@ In `Post.jsx`:
 
 In `AddPost.js`:
 
-```js
+```javascript
 handleSubmit = async event => {
   event.preventDefault();
 
@@ -383,13 +382,13 @@ handleSubmit = async event => {
 
 In `Application.jsx`:
 
-- Remove the `handleCreate` method completely.
-- Remove the `handleRemove` method completely.
-- Remove `onCreate` and `onRemove` from the `<Post />` component in the `render()` method.
+* Remove the `handleCreate` method completely.
+* Remove the `handleRemove` method completely.
+* Remove `onCreate` and `onRemove` from the `<Post />` component in the `render()` method.
 
 ### Getting the Ordering Right
 
-```js
+```javascript
 this.unsubscribe = firestore.collection('posts').orderBy('createdAt', 'desc').onSnapshot(snapshot => { // NEW
   const posts = snapshot.docs.map(collectIdsAndData);
   this.setState({ posts });
@@ -402,7 +401,7 @@ Remember when we calmed Firebase down about timestamps? Take a good hard look at
 
 In `Post.jsx`:
 
-```js
+```javascript
 moment(createdAt.toDate()).calendar()
 ```
 
@@ -414,7 +413,7 @@ We have that "Star" button. When a user clicks the "Star" button, we should incr
 
 #### Solution
 
-```js
+```javascript
 <button
   className="star"
   onClick={() => {
@@ -430,7 +429,7 @@ We have that "Star" button. When a user clicks the "Star" button, we should incr
 
 #### Quick Refactoring
 
-```js
+```javascript
 const postRef = firestore.doc(`posts/${id}`);
 
 //…
@@ -449,8 +448,8 @@ Let's implement authentication in our application.
 
 First, let's head over to the dashboard and turn on some authentication. We'll be using two forms of authentication.
 
-- Email and password authentication
-- Google sign-in
+* Email and password authentication
+* Google sign-in
 
 Let's go an turn those on.
 
@@ -458,7 +457,7 @@ Let's go an turn those on.
 
 Let's store the current user in the state of the `Application` component for now.
 
-```js
+```javascript
 state = {
   posts: [],
   user: null
@@ -471,7 +470,7 @@ We're going to start with Google Sign-in because I can assume you have a Google 
 
 In `Application.jsx`:
 
-```js
+```javascript
 render() {
   const { posts, user } = this.state;
 
@@ -487,7 +486,7 @@ render() {
 
 In `firebase.js`:
 
-```js
+```javascript
 import 'firebase/auth';
 
 // …
@@ -499,7 +498,7 @@ export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
 In `SignIn.jsx`:
 
-```js
+```javascript
 <button onClick={signInWithGoogle}>Sign In With Google</button>
 ```
 
@@ -507,7 +506,7 @@ In `SignIn.jsx`:
 
 In `Application.jsx`:
 
-```js
+```javascript
 unsubscribeFromFirestore = null;
 unsubscribeFromAuth = null;
 
@@ -534,7 +533,7 @@ componentWillUnmount = () => {
 
 I'll add this to `firebase.js`:
 
-```js
+```javascript
 export const signOut = () => auth.signOut();
 ```
 
@@ -544,13 +543,13 @@ This one is pretty simple. There is a method called `auth.signOut()`. Can you wr
 
 In `CurrentUser.jsx`:
 
-```js
+```javascript
 <button onClick={signOut}>Sign Out</button>
 ```
 
 ### Showing the Right Component The First TIme
 
-```js
+```javascript
 state = {
   posts: [],
   user: null,
@@ -558,13 +557,13 @@ state = {
 };
 ```
 
-```js
+```javascript
 this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
   this.setState({ user, userLoaded: true });
 });
 ```
 
-```js
+```javascript
 render() {
   const { posts, user, userLoaded } = this.state;
 
@@ -584,11 +583,9 @@ render() {
 
 Up until now, everything has been wide open. That's not great. If we're going to push stuff out to production, we're going to need to start adding some security to our application.
 
-<!-- SLIDES -->
-
 Cloud Firestore rules always following this structure:
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     // ...
@@ -598,7 +595,7 @@ service cloud.firestore {
 
 There is a nice query pattern for rules:
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /posts/{postId} {
@@ -611,7 +608,7 @@ service cloud.firestore {
 
 You can combine them into one:
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /posts/{postId} {
@@ -623,17 +620,17 @@ service cloud.firestore {
 
 You can get a bit more granular if you'd like:
 
-- `read`
-  - `get`
-  - `list`
-- `write`
-  - `create`
-  - `update`
-  - `delete`
+* `read`
+  * `get`
+  * `list`
+* `write`
+  * `create`
+  * `update`
+  * `delete`
 
 You can nest rules to sub-collections:
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /posts/{postId} {
@@ -653,7 +650,7 @@ If you want to go to an arbitrary depth, then you can do `{document=**}`.
 
 Only read or write if you're logged in.
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     // Allow the user to access documents in the "posts" collection
@@ -667,7 +664,7 @@ service cloud.firestore {
 
 Only read and write your own data:
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
@@ -680,29 +677,27 @@ service cloud.firestore {
 
 ### Validating Based on the Document
 
-- `resource.data` will have the fields on the document as it is stored in the database.
-- `request.resource.data` will have the incoming document. (**Note**: This is all you have if you're responding to document creation.)
+* `resource.data` will have the fields on the document as it is stored in the database.
+* `request.resource.data` will have the incoming document. \(**Note**: This is all you have if you're responding to document creation.\)
 
 ### Accessing Other Documents
 
-- `exists(/databases/$(database)/documents/users/$(request.auth.uid))` will verify that a document exists.
-- `get(/databases/$(database)/documents/users/$(request.auth.uid)).data` will get you the data of another document.
+* `exists(/databases/$(database)/documents/users/$(request.auth.uid))` will verify that a document exists.
+* `get(/databases/$(database)/documents/users/$(request.auth.uid)).data` will get you the data of another document.
 
 You can write JavaScript functions to make stuff easier if you want.
 
-<!-- TODO: Make an exercise using the emulator to test rules out. -->
-
 ### Tasting Notes
 
-- Security rules are all or nothing
-- You can limit the size of a query so that malicious users (or you after a big lunch) can't run expensive queries
-  - `allow list: if request.query.limit <= 10;`
+* Security rules are all or nothing
+* You can limit the size of a query so that malicious users \(or you after a big lunch\) can't run expensive queries
+  * `allow list: if request.query.limit <= 10;`
 
 ### The Current Defaults
 
 This is what we have by default:
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
@@ -720,7 +715,7 @@ Let's make it so that authenticated users can add posts.
 
 ### Only Allowing Posts If Logged In
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /posts/{postId} {
@@ -737,7 +732,7 @@ Okay, so now any logged in user can also delete any other user's posts…
 
 ### Users Can Only Delete Their Own Posts
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /posts/{postId} {
@@ -757,7 +752,7 @@ Can you create a rule that insists on a title?
 
 #### Solution
 
-```
+```text
 service cloud.firestore {
   match /databases/{database}/documents {
     match /posts/{postId} {
@@ -773,7 +768,7 @@ service cloud.firestore {
 
 In `SignUp.jsx`:
 
-```js
+```javascript
 handleSubmit = async event => {
   event.preventDefault();
 
@@ -796,19 +791,19 @@ handleSubmit = async event => {
 
 This has some problems:
 
-- The display name won't update immediately.
-- There is no `photoURL` because we didn't get one for free.
-- We may want to store other information beyond what we get from the use profile.
+* The display name won't update immediately.
+* There is no `photoURL` because we didn't get one for free.
+* We may want to store other information beyond what we get from the use profile.
 
 The solution? Create documents for user profiles in Cloud Firestore.
 
 ## Storing User Information in Cloud Firestore
 
-The information on the user object is great, but we're going to run into limitations *real* quick.
+The information on the user object is great, but we're going to run into limitations _real_ quick.
 
-- What if we want to let the user set a bio or something?
-- What we want to set admin permissions on the users?
-- What we we want to keep track of what posts that a user has favorited?
+* What if we want to let the user set a bio or something?
+* What we want to set admin permissions on the users?
+* What we we want to keep track of what posts that a user has favorited?
 
 These are very reasonable possibilities, right?
 
@@ -816,7 +811,7 @@ The solution is super simple: We'll make documents based off of the user's `uid`
 
 Let's give ourselves some of the infrastructure for this.
 
-```js
+```javascript
 export const createUserDocument = async (user, additionalData) => {
   // If there is no user, let's not do this.
   if (!user) return;
@@ -868,15 +863,15 @@ export const getUserDocument = async uid => {
 
 We're going to put this two places:
 
-- `onAuthStateChanged` in order to get our Google Sign Ups
-- In `handleSubmit` in `SignUp` because that's where we'll have that custom display name.
+* `onAuthStateChanged` in order to get our Google Sign Ups
+* In `handleSubmit` in `SignUp` because that's where we'll have that custom display name.
 
 ### Updating Security Rules
 
-```
+```text
 match /users/{userId} {
-	allow read;
-	allow write: if request.auth.uid == userId;
+    allow read;
+    allow write: if request.auth.uid == userId;
 }
 ```
 
@@ -894,7 +889,7 @@ What if we used React's Context API?
 
 ### PostsProvider
 
-```js
+```javascript
 import React, { Component, createContext } from 'react';
 import { firestore } from '../firebase';
 import { collectIdsAndData } from '../utilities';
@@ -934,7 +929,7 @@ export default PostsProvider;
 
 In `index.jsx`:
 
-```js
+```javascript
 import PostsProvider from './contexts/PostsProvider';
 
 render(
@@ -947,7 +942,7 @@ render(
 
 In `Posts.jsx`:
 
-```js
+```javascript
 import React, { useContext } from 'react';
 import Post from './Post';
 import AddPost from './AddPost';
@@ -971,7 +966,7 @@ export default Posts;
 
 ### Using Hooks!
 
-```js
+```javascript
 import React, { useContext } from 'react';
 import Post from './Post';
 import AddPost from './AddPost';
@@ -995,7 +990,7 @@ export default Posts;
 
 In `UserProvider.jsx`:
 
-```js
+```javascript
 import React, { Component, createContext } from 'react';
 import { auth, createUserDocument } from '../firebase';
 
@@ -1031,7 +1026,7 @@ export default UserProvider;
 
 In `index.jsx`:
 
-```js
+```javascript
 import React from 'react';
 import { render } from 'react-dom';
 
@@ -1053,7 +1048,7 @@ render(
 
 In `UserDashboard.jsx`:
 
-```js
+```javascript
 import React, { useContext } from 'react'
 import { UserContext } from '../contexts/UserProvider';
 import SignIn from './SignIn';
@@ -1072,20 +1067,19 @@ const UserDashboard = () => {
 export default UserDashboard;
 ```
 
-
 ## Cleaning Up the User Interface
 
 Maybe let's stop showing stuff that the user can't do?
 
 In `Posts.jsx`:
 
-```js
+```javascript
 {user && <AddPost user={user} />}
 ```
 
 In `Post.jsx`:
 
-```js
+```javascript
 const belongsToCurrentUser = (currentUser, postAuthor) => {
   if (!currentUser) return false;
   return currentUser.uid === postAuthor.uid;
@@ -1112,7 +1106,7 @@ belongsToCurrentUser(currentUser, user) && <button
 
 We'll make a very simple `UserProfilePage`:
 
-```js
+```javascript
 class UserPfoile extends Component {
   render() {
     return (
@@ -1124,7 +1118,7 @@ class UserPfoile extends Component {
 
 In `index.js`:
 
-```js
+```javascript
 import { BrowserRouter as Router } from 'react-router-dom';
 
 render(
@@ -1141,7 +1135,7 @@ render(
 
 In `Application.jsx`:
 
-```js
+```javascript
 import React, { Component } from 'react';
 
 import Posts from './Posts';
@@ -1171,13 +1165,13 @@ export default Application;
 
 In `CurrentUser.jsx`:
 
-```js
+```javascript
 <Link to="/profile"><h2>{displayName}</h2></Link>
 ```
 
 Okay, let's draw the owl with the `UserProfile` page.
 
-```js
+```javascript
 import React, { Component } from 'react';
 import { auth, firestore } from '../firebase';
 
@@ -1240,13 +1234,13 @@ Firebase also includes storage as well.
 
 Let's add storage to `firebase.js`:
 
-```js
+```javascript
 import 'firebase/storage';
 ```
 
 Cool, we'll export that as well.
 
-```js
+```javascript
 export const storage = firebase.storage();
 ```
 
@@ -1254,7 +1248,7 @@ export const storage = firebase.storage();
 
 Back in `UserProfile.jsx`:
 
-```js
+```javascript
 imageInput = null;
 
 get file() {
@@ -1262,7 +1256,7 @@ get file() {
 }
 ```
 
-```js
+```javascript
 if (this.file) {
   storage
     .ref()
@@ -1279,7 +1273,7 @@ if (this.file) {
 
 You can get really excited, but it's going to blow up.
 
-```
+```text
 service firebase.storage {
   match /b/{bucket}/o {
     match /user-profile/{userId}/{photoURL} {
@@ -1293,7 +1287,7 @@ service firebase.storage {
 
 Let's create a page for a single post where people can leave comments.
 
-```js
+```javascript
 import React, { Component } from 'react';
 
 import { withRouter, Link, Redirect } from 'react-router-dom';
@@ -1376,7 +1370,7 @@ Remember, `withRouter`? That was pretty cool. Let's maybe try it with our user o
 
 In `withUser.jsx`:
 
-```js
+```javascript
 import React from 'react';
 import { UserContext } from '../contexts/UserProvider';
 
@@ -1399,7 +1393,7 @@ export default withUser;
 
 Now, we can use `withRouter` and `withUser` to get everything we need to our components.
 
-```js
+```javascript
 handleSubmit = event => {
   event.preventDefault();
 
@@ -1419,21 +1413,21 @@ handleSubmit = event => {
 
 Make sure you have the latest version of the Firebase CLI tools.
 
-```
+```text
 firebase install -g firebase-tools
 ```
 
-(This will also do the trick if you don't have them at all.)
+\(This will also do the trick if you don't have them at all.\)
 
 You'll also need to be logged in.
 
-```
+```text
 firebase login
 ```
 
 You'll need to initialize your project.
 
-```
+```text
 firebase init
 ```
 
@@ -1443,15 +1437,15 @@ We'll pick the services we want to use and go with the defaults.
 
 **Note**: You want to make sure that you're "public" directory is `build` and not `public`.
 
-There is one setting where we do *not* want the default option:
+There is one setting where we do _not_ want the default option:
 
-> ? Configure as a single-page app (rewrite all urls to /index.html)? *Yes*
+> ? Configure as a single-page app \(rewrite all urls to /index.html\)? _Yes_
 
 We'll modify our npm scripts to run our `build` script followed by `firebase deploy`.
 
 In `package.json`:
 
-```
+```text
 "deploy": "npm run build && firebase deploy"
 ```
 
@@ -1471,7 +1465,7 @@ Other than that, there is not a lot to see here.
 
 Make sure you have the latest versions of the helper libraries installed.
 
-```js
+```javascript
 npm install firebase-functions@latest firebase-admin@latest --save
 ```
 
@@ -1479,7 +1473,7 @@ npm install firebase-functions@latest firebase-admin@latest --save
 
 Let's start by just uncommenting the example that it's `functions/index.js`.
 
-```js
+```javascript
 const functions = require('firebase-functions');
 
 // // Create and Deploy Your First Cloud Functions
@@ -1492,13 +1486,13 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 
 Very cool. Let's go ahead and deploy that function and see how it goes.
 
-```
+```text
 firebase deploy --only functions
 ```
 
 Okay, let's go visit that on the web.
 
-```
+```text
 https://us-central1-MY_PROJECT.cloudfunctions.net/helloWorld
 ```
 
@@ -1508,7 +1502,7 @@ Neat. Your API endpoint should world. You can `curl` it if you don't believe me.
 
 #### Creating a Posts Endpoint
 
-```js
+```javascript
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 
@@ -1545,7 +1539,7 @@ We can also listen for events on documents in Firebase and automatically trigger
 
 Let's try to increment the comment count whenever we find ourselves making a comment.
 
-```js
+```javascript
 exports.incrementCommentCount = functions.firestore
   .document('posts/{postId}/comments/{commentId}')
   .onCreate(async (snapshot, context) => {
@@ -1561,9 +1555,9 @@ exports.incrementCommentCount = functions.firestore
 
 Can you implement decrementing the comment count?
 
-(**Note**: We don't have a way to delete comments in the UI. You can either do this in Firebase console—or you can just implement the user interface!)
+\(**Note**: We don't have a way to delete comments in the UI. You can either do this in Firebase console—or you can just implement the user interface!\)
 
-```js
+```javascript
 exports.incrementCommentCount = functions.firestore
   .document('posts/{postId}/comments/{commentId}')
   .onCreate(async (snapshot, context) => {
@@ -1577,7 +1571,7 @@ exports.incrementCommentCount = functions.firestore
 
 #### Sanitize Content
 
-```js
+```javascript
 exports.sanitizeContent = functions.firestore
   .document('posts/{postId}')
   .onWrite(async change => {
@@ -1598,7 +1592,7 @@ exports.sanitizeContent = functions.firestore
 
 #### Updating User Information on a Post
 
-```js
+```javascript
 exports.updateUserInformation = functions.firestore
   .document('users/{userId}')
   .onUpdate(async (snapshot, context) => {
@@ -1620,7 +1614,7 @@ exports.updateUserInformation = functions.firestore
 
 ### Render Prop Pattern
 
-```js
+```javascript
 import React, { Component } from 'react'
 import { firestore } from '../firebase';
 import { collectIdsAndData } from '../utilities';
@@ -1653,3 +1647,4 @@ class PostsForUser extends Component {
 
 export default PostsForUser;
 ```
+
