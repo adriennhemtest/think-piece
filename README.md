@@ -1,4 +1,4 @@
-# Firebase && React
+# Firebase && Ruby
 
 ## Update content
 
