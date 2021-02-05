@@ -1,8 +1,24 @@
-# Firebase && Ruby
+# Firebase && React
 
 ## Update content
 
-Take a tour of the application.
+{% tabs %}
+{% tab title="js" %}
+{% code title="Number.js" %}
+```javascript
+const num = 10;
+```
+{% endcode %}
+
+#### Variables 
+{% endtab %}
+
+{% tab title="Second Tab" %}
+
+{% endtab %}
+{% endtabs %}
+
+Take a tour of the [application](./#removing-a-post).
 
 * Set up a new project in the Firebase console.
 * Take a tour of the Firebase console.
